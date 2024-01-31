@@ -1,0 +1,91 @@
+---
+title: "WORDCLOUD"
+author: "Emil"
+date: "2023-11-14"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+library(wordcloud2)
+library(paletteer)
+head(demoFreq)
+```
+
+
+```{r}
+wordcloud2(data = demoFreq, size = 1.6)
+```
+
+
+```{r}
+wordcloud2(data = demoFreq, size = 1.6,
+           color = paletteer_c("grDevices::Dark 3", 25))
+```
+
+
+```{r}
+wordcloud2(data = demoFreq, size = 1.6,
+           color = paletteer_c("grDevices::Dark 3",50),
+           backgroundColor = "pink")
+```
+
+
+```{r}
+wordcloud2(data = demoFreq, size = .4,
+           shape = "circle"
+          )
+```
+
+```{r}
+wordcloud2(data = demoFreq, size = .4,
+           shape = "diamond")
+```
+
+
+```{r}
+wordcloud2(data = demoFreq, size = .4,
+           shape = "triangle-forward")
+```
+
+
+```{r}
+wordcloud2(data = demoFreq, size = .4,
+           shape = "pentagon")
+```
+
+
+```{r}
+wordcloud2(data = demoFreq, size = .4,
+           shape = "pentagon",
+           fontFamily = "times_new_roman")
+```
+
+
+```{r}
+wordcloud2(data = demoFreq, size = .4,
+           shape = "star",
+           fontFamily = "calibri")
+```
+
+
+```{r}
+wordcloud2(data = demoFreq, size = .4,
+           shape = "pentagon",
+           fontFamily = "calibri")
+```
+
+
+```{r}
+
+```
+
