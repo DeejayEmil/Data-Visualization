@@ -1,0 +1,256 @@
+---
+title: "Funciones"
+author: "Emil"
+date: "2023-12-05"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+```
+
+```{r}
+library(dplyr)
+library(paletteer)
+library(ggplot2)
+library(maps)
+ggplot(data.frame(x=c(-3,3)),aes(x=x))+
+stat_function(fun=dnorm)
+```
+
+
+```{r}
+ggplot(data.frame(x=c(-3,3)),aes(x=x))+
+stat_function(fun=dnorm, args = list(mean = 3, sd =5))
+```
+
+
+```{r}
+ggplot(data.frame(x=c(-3,3)),aes(x=x))+
+stat_function(fun=dnorm, args = list(mean = 1, sd =.25))+
+  geom_vline(xintercept = 0, color = "red", lwd=1, lty = 6)
+```
+
+
+```{r}
+sencilla<-function(x){(1/(x^2-2*x+1))}
+ggplot(data.frame(x=c(-10,10)),aes(x=x))+
+stat_function(fun=sencilla, colour="darkblue",lwd=1,linetype=1)
+```
+
+
+```{r}
+ggplot(data.frame(x=c(-3,3)),aes(x=x))+
+stat_function(fun=dnorm)+
+  geom_vline(xintercept = 0, color= "red", lwd=1, lty = 6)
+```
+
+```{r}
+ggplot(data.frame(x=c(-3,3)),aes(x=x))+
+stat_function(fun=dnorm)+
+  geom_segment(x = 0, y = 0, xend = 0, yend = 0.4, linetype = 4, color = "pink", lwd = 2)
+```
+
+```{r}
+sencilla<-function(x){(1/(x^2-2*x+1))}
+
+p <- ggplot(data.frame(x=c(-10,10)),aes(x=x))+
+  stat_function(fun=sencilla, colour="darkblue",lwd=1,linetype=1) +
+  
+  geom_vline(xintercept = 1, color= "red", lwd=1, lty = 6) +
+  
+  geom_hline(yintercept = 0, color= "red", lwd=1, lty = 6) +
+  
+  coord_fixed(ylim= c(0,20), xlim = c(-15,15)) +
+  
+  theme_classic()+ 
+  
+  xlab("Eje X")+
+  ylab("Eje Y")+
+  
+  theme(axis.text.x = element_text(angle = 45, color = "blue"),
+        axis.text.y = element_text(color = "grey", size =  10),
+        axis.title.x = element_text(color = "purple", size = 15, face = "bold"),
+        axis.title.y = element_text(color = "black", size = 15),
+        plot.title = element_text(color = "purple", size = 13, face = "bold")
+        ) +
+  
+  ggtitle("Grafica de una \nfuncion polinomica") 
+
+p + annotate("text", x = 5, y = 15, parse = TRUE,
+           label = "'f(x) ='* frac(1, x^2 - 2*x + 1)", color = "purple")
+```
+
+
+```{r}
+
+# Crear el primer gráfico
+grafico <- ggplot(data.frame(x = c(-3, 3)), aes(x = x)) +
+  scale_x_continuous(breaks = c(-3,-1,0,1,3))+
+  stat_function(fun = dnorm, args = list(mean = 1, sd = 0.8), color = "red", lty = 4) +
+  theme_classic()+
+  xlim(-3,3)+
+  
+  stat_function(fun = dnorm, args = list(mean = 1, sd = 1.5), color = "orange", lty = 5)+
+  stat_function(fun = dnorm, args = list(mean = 1, sd = .5), color = "blue", lty = 3)+
+  geom_segment(x = -2, y = 0.6, xend = -2.5, yend =.6, color = "red", lwd=1, lty= 4)+
+  geom_segment(x = -2, y = 0.55, xend = -2.5, yend =.55, color = "orange", lwd=1, lty= 4)+
+  geom_segment(x = -2, y = 0.5, xend = -2.5, yend =.5, color = "blue", lwd=1, lty= 4) +
+
+  annotate("text", x= -1.2, y=0.6, label = "N(mu==1,sigma==0.8)", parse = TRUE, color = "red")+
+  annotate("text", x= -1.2, y=0.55, label = "N(mu==1,sigma==1.5)", parse = TRUE, color = "orange")+
+  annotate("text", x= -1.2, y=0.5, label = "N(mu==1,sigma==0.5)", parse = TRUE, color = "blue")
+  
+
+# Mostrar el gráfico resultante
+print(grafico)
+  
+
+```
+
+
+```{r}
+
+arrows <- 
+  tibble(
+    x1 = c(187, 212),
+    x2 = c(205, 204),
+    y1 = c(6000, 3000), 
+    y2 = c(5500, 3500)
+  )
+
+
+
+ggplot(data.frame(x = c(-3, 5)), aes(x = x)) +
+  theme_classic()+
+  
+  
+  stat_function(fun = dnorm, geom='line',args = list(mean = 0, sd = 1), color = "pink", lty = 2) +
+  
+  stat_function(fun = dnorm, geom='area',args = list(mean = 0, sd = 1), fill = "pink", lty = 1, xlim =c(-.5,0)) +
+  
+  stat_function(fun = dnorm, geom='area',args = list(mean = 1, sd = 1), fill = "blue", lty = 1, xlim =c(.5,1)) +
+  
+
+  
+  
+  scale_x_continuous(breaks = c(0,1))+
+  stat_function(fun = dnorm, geom='line',args = list(mean = 1, sd = 1), color = "blue", lty = 1)+
+  
+
+  
+   
+  coord_cartesian(ylim=c(0, 0.4))+
+  xlab("Valores de x")+
+  ylab("Probabilidad")+
+  
+  annotate("text", x = .5, y = .41, parse = TRUE,
+           label = "'P(-0.5<X<0)='* P(0.5<1)", color = "black", size = 3)+
+  
+   annotate("text", x= 3, y=0.3, label = "N(0, 1)", parse = TRUE, color = "pink", size = 3)+
+  annotate("text", x= 3, y=0.27, label = "N(1, 1)", parse = TRUE, color = "blue", size = 3)+
+  
+  geom_segment(x = 4, y = 0.3, xend = 3.5, yend =.3, color = "pink", lwd=1, lty= 4)+
+  geom_segment(x = 4, y = 0.27, xend = 3.5, yend =.27, color = "blue", lwd=1, lty= 1)+
+  
+  
+  ggtitle("Distribucion Normal")+
+  theme(axis.line.x.bottom=element_line(color="red"),
+        axis.line.y.left = element_blank(),
+        axis.text.x = element_text(color="blue"),
+        axis.text.y = element_text(color="blue"),
+        axis.title.x = element_text(face = "bold"),
+        axis.title.y = element_text(face = "bold"),
+        plot.title = element_text(size= 10))
+
+
+#flechas
+  
+
+
+
+
+
+```
+
+
+
+
+```{r}
+
+
+
+ggplot(data.frame(x = c(-3, 5)), aes(x = x)) +
+  theme_classic()+
+  
+  
+  stat_function(fun = dnorm, geom='line',args = list(mean = 0, sd = 1), color = "pink", lty = 2) +
+  
+  stat_function(fun = dnorm, geom='area',args = list(mean = 0, sd = 1), fill = "pink", lty = 1, xlim =c(-.5,0)) +
+  
+  stat_function(fun = dnorm, geom='area',args = list(mean = 1, sd = 1), fill = "blue", lty = 1, xlim =c(.5,1)) +
+  
+
+  
+  
+  scale_x_continuous(breaks = c(0,1))+
+  stat_function(fun = dnorm, geom='line',args = list(mean = 1, sd = 1), color = "blue", lty = 1)+
+  
+
+  
+   
+  coord_cartesian(ylim=c(0, 0.4))+
+  xlab("Valores de x")+
+  ylab("Probabilidad")+
+  
+  annotate("text", x = .5, y = .41, parse = TRUE,
+           label = "'P(-0.5<X<0)='* P(0.5<1)", color = "black", size = 3)+
+  
+   annotate("text", x= 3, y=0.3, label = "N(0, 1)", parse = TRUE, color = "pink", size = 3)+
+  annotate("text", x= 3, y=0.27, label = "N(1, 1)", parse = TRUE, color = "blue", size = 3)+
+  
+  geom_segment(x = 4, y = 0.3, xend = 3.5, yend =.3, color = "pink", lwd=1, lty= 4)+
+  geom_segment(x = 4, y = 0.27, xend = 3.5, yend =.27, color = "blue", lwd=1, lty= 1)+
+  
+  
+  
+  
+#titulo  
+  ggtitle("Distribucion Normal")+
+#formato grafico  
+  theme(axis.line.x.bottom=element_line(color="red"),
+        axis.line.y.left = element_blank(),
+        axis.text.x = element_text(color="blue"),
+        axis.text.y = element_text(color="blue"),
+        axis.title.x = element_text(face = "bold"),
+        axis.title.y = element_text(face = "bold"),
+        plot.title = element_text(size= 10)) +
+#flechas
+  geom_curve(x = 1.2, y = .4,
+               xend = 1.2, yend = .25,
+               color = "blue",
+               arrow = arrow(length=unit(.45,"cm")),
+             curvature = -.5,
+             lty = 2,size = .8) +
+  
+    geom_curve(x = -.2, y = .4,
+               xend = -.6, yend = .25,
+               color = "pink",
+               arrow = arrow(length=unit(.30,"cm")),
+             curvature = .5,
+             lty = 1,size = .8) 
+
+
+
+
+```
+
+
+
+```{r}
+```
+
