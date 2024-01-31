@@ -1,0 +1,245 @@
+---
+title: "Representacion de distribuciones"
+author: "Emil"
+date: "2023-11-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+```
+
+## R Markdown
+```{r}
+library(ggplot2)
+library(paletteer)
+library(MASS)
+```
+
+
+```{r}
+head(birthwt)
+```
+
+
+```{r}
+ggplot(birthwt, aes(x = bwt)) + 
+  geom_histogram(fill = "white", color = "black")
+```
+
+
+```{r}
+ggplot(birthwt, aes(x = bwt)) + 
+  geom_histogram(fill = "white", color = "black", binwidth = 500) 
+```
+
+
+```{r}
+ggplot(birthwt, aes(x = bwt)) + 
+  geom_histogram(fill = "white", color = "black", binwidth = 500) +
+  facet_grid(smoke ~ .)
+```
+
+
+```{r}
+ggplot(birthwt, aes(x = bwt)) + 
+  geom_histogram(fill = "white", color = "black", binwidth = 500) +
+  facet_grid(smoke ~ .)
+```
+
+
+```{r}
+birthwt2<-birthwt
+birthwt2$smoke<-factor(ifelse(birthwt$smoke == 0, "No fuma", "Fuma"))
+```
+
+
+```{r}
+ggplot(birthwt2, aes(x = bwt)) + 
+  geom_histogram(fill = "white", color = "black", binwidth = 500) +
+  facet_grid(smoke ~ .)
+```
+
+
+```{r}
+ggplot(birthwt2, aes(x = bwt, fill = smoke)) + 
+  geom_histogram(position = "identity", alpha = .3) +
+  scale_fill_manual(values = paletteer_c("grDevices::Blue-Red 2", 2))
+```
+
+
+```{r}
+ggplot(birthwt2, aes(x = bwt, color = smoke)) + 
+  geom_line(stat = "density")
+
+```
+
+
+```{r}
+ggplot(birthwt2, aes(x = bwt, color = smoke)) + 
+  geom_density()
+```
+
+
+```{r}
+ggplot(birthwt2, aes(x = bwt, fill = smoke)) + 
+  geom_density(alpha = .4)
+```
+
+
+```{r}
+ggplot(birthwt2, aes(x = bwt, fill = smoke)) + 
+  geom_density(alpha = .4)+
+  scale_fill_viridis_d()
+```
+
+
+```{r}
+ggplot(birthwt2, aes(x = bwt)) + 
+  geom_histogram(aes(y = ..density..),
+                 fill = "darkmagenta",
+                 color = "grey",
+                 alpha = .5)+
+  geom_density(colour = "red")+
+  facet_grid(smoke ~ .)
+  
+```
+
+Poligonos de frecuencias
+```{r}
+
+ggplot(birthwt2, aes(x = age)) +
+  geom_freqpoly()
+```
+
+
+```{r}
+ggplot(birthwt2, aes(x = age)) +
+  geom_freqpoly(binwidth = 5)
+```
+
+
+```{r}
+ggplot(birthwt2, aes(x = age)) + 
+  geom_histogram(fill = "darkmagenta",
+                 color = "black",
+                 alpha = .5,
+                 binwidth = 5)+
+  geom_freqpoly(binwidth = 5,color = "blue")
+```
+
+
+```{r}
+ggplot(birthwt2, aes(x = smoke, y = bwt)) + 
+   geom_boxplot()
+
+```
+
+
+```{r}
+birthwt2$race  <- as.factor(birthwt2$race)
+ggplot(birthwt2, aes(x = race, y = bwt)) + 
+   geom_boxplot()
+```
+
+
+```{r}
+birthwt2$race  <- as.factor(birthwt2$race)
+ggplot(birthwt2, aes(x = race, y = bwt)) + 
+   geom_boxplot(notch = TRUE, fill = "pink")
+
+```
+
+```{r}
+birthwt2$race  <- as.factor(birthwt2$race)
+ggplot(birthwt2, aes(x = race, y = bwt)) + 
+   geom_boxplot(notch = TRUE, fill = "pink")+
+  stat_summary(color = "darkgreen", shape = 22, fill = "red")
+```
+
+Diagrama de violin
+
+```{r}
+ggplot(birthwt2, aes(x = race, y = bwt))+
+  geom_violin()
+```
+
+
+```{r}
+ggplot(birthwt2, aes(x = race, y = bwt))+
+  geom_violin(adjust = 2)
+```
+
+
+```{r}
+ggplot(birthwt2, aes(x = race, y = bwt))+
+  geom_violin(trim = FALSE)
+```
+
+
+```{r}
+ggplot(birthwt2, aes(x = race, y = bwt))+
+  geom_violin(scale = "count")
+```
+
+
+```{r}
+
+head(faithful)
+```
+
+
+```{r}
+
+ggplot(faithful, aes(x = eruptions, y = waiting)) +
+  geom_point()
+```
+
+
+```{r}
+ggplot(faithful, aes(x = eruptions, y = waiting)) +
+  geom_point()+
+  stat_density_2d()
+```
+
+
+```{r}
+ggplot(faithful, aes(x = eruptions, y = waiting)) +
+  geom_point()+
+  stat_density_2d(aes(color = ..level..))
+```
+
+
+```{r}
+ggplot(faithful, aes(x = eruptions, y = waiting)) +
+  geom_point()+
+  stat_density_2d(aes(fill = ..density..), geom = "raster", contour = FALSE)
+```
+
+
+```{r}
+ggplot(faithful, aes(x = eruptions, y = waiting)) +
+  geom_point()+
+  stat_density_2d(aes(alpha = ..density..), geom = "tile" , contour = FALSE)
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
