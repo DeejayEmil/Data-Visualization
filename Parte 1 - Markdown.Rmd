@@ -1,0 +1,302 @@
+---
+title: "Parte 1"
+author: "Emil Alfonso Gil Hernandez, RD5296704"
+date: "2023-10-19"
+output: html_document
+warning: FALSE
+message: FALSE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Segundo conjunto de datos: En el siguiente enlace web https://cnecovid.isciii.es/
+covid19/#documentaci%C3%B3n-y-datos puedes encontrar datos reales sobre COVID-19 por
+provincias, edades, sexo y fechas en Espa˜na.
+Descarga el conjunto de datos: casos hosp uci def sexo edad provres.csv
+## 6. Analiza los datos y realiza alg´un gr´afico que te resulte interesante.
+
+```{r message=FALSE, warning=FALSE}
+library(dplyr)
+data <- read.csv("casos_hosp_uci_def_sexo_edad_provres.csv",header = TRUE,sep =",")
+data$fecha <- as.Date(data$fecha)
+```
+
+
+```{r message=FALSE, warning=FALSE}
+firstyear <- data  %>%
+  filter(fecha >= "2020-01-01" & fecha <= "2020-12-31") %>%
+  group_by(provincia_iso)  %>% 
+  summarise(num_def = sum(num_def)) %>% 
+  arrange(desc(num_def)) %>% 
+  top_n(5)
+
+secondyear <- data  %>%
+  filter(fecha >= "2021-01-01" & fecha <= "2021-12-31") %>%
+  group_by(provincia_iso)  %>% 
+  summarise(num_def = sum(num_def)) %>% 
+  arrange(desc(num_def)) %>% 
+  top_n(5) 
+ 
+```
+# Ejercicio 6 de graficos basicos
+Grafico de las 10 provincias con mas defunciones en 2020 y 2021, comparacion.
+```{r message=FALSE, warning=FALSE,fig.align='center'}
+library(paletteer)
+par(mfrow = c(1, 2))
+
+
+limites_y <- c(0,14000)
+bp1<-barplot(firstyear$num_def, 
+        ylim = limites_y,
+        col = paletteer_c("ggthemes::Red-Blue-White Diverging", 5),
+        legend.text = firstyear$provincia_iso,
+        args.legend=list(x="topright", title="Provincia",cex = 0.7),
+        beside = TRUE,
+        xlab = "Las 10 provincias con mas defunciones por COV-19 en 2020",
+        ylab = "Comparacion del impacto del Covid entre 2020 y 2021",
+        cex.lab = 0.7)
+text(bp1, firstyear$num_def, labels = firstyear$num_def, cex = 0.8, pos = 3)
+
+bp2<-barplot(secondyear$num_def, 
+        ylim = limites_y,
+        col = paletteer_c("ggthemes::Red-Blue-White Diverging", 5),
+        legend.text = secondyear$provincia_iso,
+        args.legend=list(x="topright", title="Provincia",cex = 0.7),
+        beside = TRUE,
+        xlab = "Las 10 provincias con mas defunciones por COV-19 en 2021",
+        cex.lab = 0.7)
+
+text(bp1, secondyear$num_def, labels = secondyear$num_def, cex = 0.8, pos = 3)
+
+par(mfrow = c(1, 1))
+```  
+
+
+# Ejercicio 1
+Utilizando el conjunto de datos “diamonds”, de la librería gcookbook, consigue las siguientes visualizaciones:
+
+## Primera Visualizacion
+```{r message=FALSE, warning=FALSE, fig.align='center'}
+library(gcookbook)
+library(ggplot2)
+library(dplyr)
+library(paletteer)
+df <- diamonds %>% 
+  rename(Color = color) %>% 
+  group_by(cut, Color) %>% 
+  summarise(price = mean(price))
+
+
+
+ggplot(df, aes(x=cut, y =price, fill = Color)) +
+  geom_col()+ 
+  labs(x = "Type of Cut", y = "Means of the prices")+
+  scale_fill_manual(values = paletteer_c("grDevices::Dark 3", 7))
+
+```
+
+
+## Segunda Visualizacion
+
+```{r message=FALSE, warning=FALSE, fig.align='center'}
+ggplot(df, aes(x=cut, y =price, fill = Color)) +
+  geom_col(position = "dodge")+ 
+  labs(x = "Type of Cut", y = "Means of the prices")+
+  scale_fill_manual(values = paletteer_dynamic("cartography::pastel.pal", 7))
+```
+
+# Ejercicio 2
+El conjunto de datos Temperatures.csv que encontrarás en el Campus Virtual contiene información de la variación de las temperaturas con respecto a la media (variable Variation) entre los años 1900 y 2000 (variable Year).
+
+Además, la variable Positive indica “True” si la variación fue positiva y “False” si la variación fue negativa.
+
+Aparece otra variable, conf.level95, con la información del intervalo de confianza al 95%.
+
+```{r message=FALSE, warning=FALSE, fig.align='center'}
+data <- read.csv("Temperatures.csv",header = TRUE,sep =",")
+
+
+ggplot(data, aes(x=Year, y = Variation, fill = Positive)) +
+  geom_col() +
+  scale_fill_manual(values = c("blue","red"))
+```
+
+# Ejercicio 3
+
+
+```{r message=FALSE, warning=FALSE, fig.align='center'}
+library(babynames)
+library(dplyr)
+library(ggplot2)
+data <- babynames
+
+datam <- data %>% 
+  filter(sex == "M") %>% 
+  arrange(desc(n))
+
+
+datam <- datam %>% 
+  filter(name == "James") %>% 
+  select(year,quantity_men= n ) %>% 
+  arrange(desc(year))
+
+
+
+dataf <- data %>% 
+  filter(sex == "F") %>% 
+  arrange(desc(n))
+
+dataf <- dataf %>% 
+  filter(name == "Mary") %>% 
+  select(year,quantity_wmen= n ) %>% 
+  arrange(desc(year))
+
+
+
+df <- data.frame(dataf$year,datam$quantity_men,dataf$quantity_wmen)
+df <- df %>% 
+  select(year = dataf.year, men=datam.quantity_men, women=dataf.quantity_wmen)
+
+ggplot(df, aes(x=year, y=men, color="James")) +
+  geom_line(size=1) +
+  geom_line(aes(x=year, y=women, color="Mary"), linetype=1, size=1) +
+  xlab("Año") +
+  ylab("Numero de personas con el nombre") +
+  labs(color="Nombre") +
+  scale_color_manual(values=c("James"="blue", "Mary"="limegreen"))+
+  ggtitle("Los nombres mas comunes de hombres y mujeres", subtitle = "A lo largo del tiempo en USA")
+
+```
+
+
+
+# Ejercicio 4
+
+El conjunto de datos EsperanzaVidayNatalidadCA.csv que puedes encontrar en el Campus Virtual contiene información real (descargada de la web del INE), sobre la esperanza de vida y la tasa de Natalidad en España por Comunidades Autónomas.
+Realiza un diagrama de puntos como alguno de los siguientes o similar (para el segundo o tercero tendrías que instalar la librería ggrepel):
+
+```{r message=FALSE, warning=FALSE}
+library(readr)
+library(tidyverse)
+library(ggplot2)
+library(gcookbook)
+library(data.table)
+datos <- fread("EsperanzaVidayNatalidadCA.csv", encoding = "Latin-1")
+
+datos$EsperanzaVida <- gsub(",", ".", datos$EsperanzaVida)
+datos$EsperanzaVida <- as.numeric(datos$EsperanzaVida)
+datos$Natalidad <- gsub(",", ".", datos$Natalidad)
+datos$Natalidad <- as.numeric(datos$Natalidad)
+```
+
+
+```{r message=FALSE, warning=FALSE, fig.align='center'}
+datos <- datos[-c(20), ]
+ggplot(datos, aes(x = EsperanzaVida, y = Natalidad, color = ComunidadesAutonomas)) +
+  geom_point() +
+  theme(legend.position = "none") +
+  geom_text(aes(label = ComunidadesAutonomas), size=2)
+
+```
+
+# Ejercicio 5 
+
+Grafico libre
+
+```{r message=FALSE, warning=FALSE, fig.align='center'}
+datos <- datos[-c(20), ]
+ggplot(datos, aes(x = EsperanzaVida, y = Natalidad, color = ComunidadesAutonomas)) +
+  geom_point() +
+  ggtitle("Grafico Libre para probar los formatos de clase") +
+  theme(legend.position = "none",
+        plot.title = element_text(
+        face = "italic", 
+        size = 17, 
+        color = "blue"),
+        axis.title.x = element_text(
+        face = "bold", 
+        size = 15, 
+        color = "red"),
+        axis.title.y = element_text(
+        face = "bold", 
+        size = 15, 
+        color = "green"),
+        axis.text.x = element_text(
+        face = "bold", 
+        size = 10, 
+        color = "black")) +
+  annotate("rect",
+         xmin = 77,xmax=85,
+         ymin = 4.5, ymax=10,
+         fill="red",
+         alpha=.2) +
+   annotate("segment", x = 77, xend = 85, y =10, yend = 10,
+           arrow = arrow(ends = "both", angle = 90, length = unit(.2,"cm")),color = "blue")+
+  annotate(geom = "text", x = 80, y = 10.3, label = "Aqui estamos probando las anotaciones", color = "purple", fontsize =5, fontface= "italic")+
+  geom_text(aes(label = ComunidadesAutonomas), size=2)
+
+```
+
+```{r message=FALSE, warning=FALSE}
+millonarios <- read.csv("Forbes Billionaires.csv", sep = ",")
+
+millonarios <- millonarios %>%
+  top_n(20, Networth)
+
+```
+
+Grafico de los 20 mas ricos segun Forbes, edad vs patrimonio.
+```{r message=FALSE, warning=FALSE, fig.align='center'}
+
+  ggplot(millonarios, aes(x = Age, y = Networth, color = Name)) +
+  geom_point() +
+  ggtitle("Los 20 mas ricos segun \nForbes en 2022, edad vs patrimonio") +
+  theme_light() +
+  theme(legend.position = "none",
+        plot.title = element_text(
+        face = "bold", 
+        size = 25, 
+        color = "blue"),
+        axis.title.x = element_text(
+        face = "bold", 
+        size = 15, 
+        color = "black"),
+        axis.title.y = element_text(
+        face = "bold", 
+        size = 15, 
+        color = "black"),
+        axis.text.x = element_text(
+        face = "bold", 
+        size = 10, 
+        color = "black")) +
+  geom_text(aes(label = Name), size=2, vjust = -.8)+
+  annotate("rect",
+         xmin = 55,xmax=95,
+         ymin = 40, ymax=190,
+         fill="blue",
+         alpha=.2)+
+  annotate("segment", 
+           x = 55, 
+           xend = 50, 
+           y = 218, 
+           yend = 218,
+           colour = "red", 
+           size = 1, 
+           arrow = arrow())+
+  annotate(geom = "text", x = 70, y = 218, label = "El mas rico, se encuentra en los 50...", color = "red", fontsize =5, fontface= "italic")+
+  annotate("segment", x = 55, xend = 95, y =190, yend = 190,
+           arrow = arrow(ends = "both", angle = 90, length = unit(.2,"cm")),color = "blue")+
+  annotate(geom = "text", x = 77, y = 200, label = "Los ricos mayores de 50", color = "blue", fontsize =5, fontface= "italic")+
+  annotate("rect",
+         xmin = 30,xmax=50,
+         ymin = 50, ymax=125,
+         fill="green",
+         alpha=.2)+
+  annotate(geom = "text", x = 40, y = 130, label = "Ricos menores de 50", color = "limegreen", fontsize =5, fontface= "italic")
+  
+  
+  
+```
+
