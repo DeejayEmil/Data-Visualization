@@ -1,0 +1,101 @@
+---
+title: "Examen Final"
+author: "Emil Gil"
+date: "2024-01-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+```
+
+Ejercicio 1
+
+```{r}
+library(ggplot2)
+library(gcookbook)
+library(dplyr)
+head(USArrests)
+datos <- USArrests
+ggplot(datos, aes(x = Murder, y = Assault)) +
+  geom_point() +
+  xlab("Asesinatos") +
+  ylab("Asaltos") +
+  theme_classic() +
+  theme(plot.title = element_text(face = 2, hjust=0.5))+
+  ggtitle(label = "Analisis de Tasas de Asesinatos y Asaltos por Estado en 1973:\n Crimenes Violentos en los Estados Unidos ")
+  
+```
+
+Ejercicio 2
+
+```{r}
+library(ggplot2)
+library(gcookbook)
+library(dplyr)
+head(USArrests)
+datos <- USArrests
+ggplot(datos, aes(x = Murder, y = Assault, color = rownames(datos))) +
+  theme_classic() + 
+  geom_point(shape = 17) +
+  geom_rug()+
+  theme(legend.position = "none") +
+  xlab("Asesinatos") +
+  ylab("Asaltos") +
+  geom_text(aes(label = rownames(datos), vjust = -1), size=3) +
+  ggtitle(label = "Analisis de Tasas de Asesinatos y Asaltos por Estado en 1973:\n Crimenes Violentos en los Estados Unidos ")+
+  theme(plot.title = element_text(
+    face = 4,
+    color = "darkgreen",
+    hjust = .5
+  )
+  ) + 
+  annotate("rect",
+         xmin = 11,xmax=18,
+         ymin = 150, ymax=350,
+         fill="orange",
+         alpha = .2) +
+  scale_x_continuous(breaks=seq(0,18,2))
+```
+
+Ejercicio 3
+
+```{r}
+ggplot(datos, aes( x = rownames(datos) , y = Rape)) +
+  geom_col(fill = "grey", color = "black") + 
+  theme_classic() + 
+  xlab("") + 
+  ylab("Violaciones") + 
+  ggtitle(label = "Analisis de Tasas de Violaciones por Estado en 1973:\n Crimenes Violentos en los Estados Unidos ") + 
+  theme(axis.text.x = element_text(
+    angle = 90,hjust = 1),
+        plot.title = element_text(face = 2, hjust = .5))
+```
+
+Ejercicio 4
+
+```{r}
+library(viridis)
+library(paletteer)
+
+
+
+ggplot(datos, aes( x = reorder (rownames(datos), UrbanPop) , y = Rape, fill = UrbanPop)) +
+  geom_col(color = "black") + 
+  scale_fill_viridis() + 
+  theme_light() + 
+  xlab("") + 
+  ylab("Violaciones") + 
+  ggtitle(label = "Analisis de Tasas de Violaciones por Estado en 1973:\n Crimenes Violentos en los Estados Unidos ") + 
+  theme(axis.text.x = element_text(
+    angle = 90),
+        plot.title = element_text(face = 3, color = "red", hjust = .5)) +
+  geom_text(
+    aes(label = UrbanPop/ 100, vjust = -1), size = 1.5) + 
+  labs(fill = "Porcentaje\n de la poblacion\n que vive\n en areas urbanas")+
+  ylim(0, 50)
+```
